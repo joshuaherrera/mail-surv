@@ -2,7 +2,7 @@ const express = require('express');
 const app = express(); //generates running express app
 
 app.get('/', (req, res) => {
-	res.send({ hi: 'there'});
+	res.send({ sup: 'cuh'});
 });
 
 const PORT = process.env.PORT || 5000; //heroku can inject the env var 
