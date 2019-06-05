@@ -14,7 +14,7 @@ passport.use(
 		(accessToken, refreshToken, profile, done) => {
 			console.log('access token', accessToken); //code used for profile
 			console.log('refresh token', refreshToken); //allows refreshing of expired access token.
-			console.log('profile', profile); // id'ing info
+			console.log('profile:', profile); // id'ing info
 		}
 	)
 ); //be able to auth with google
