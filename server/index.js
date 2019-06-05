@@ -11,8 +11,10 @@ passport.use(
 			clientSecret: keys.googleClientSecret,
 			callbackURL: '/auth/google/callback'
 		},
-		(accessToken) => {
-			console.log(accessToken);
+		(accessToken, refreshToken, profile, done) => {
+			console.log('access token', accessToken); //code used for profile
+			console.log('refresh token', refreshToken); //allows refreshing of expired access token.
+			console.log('profile', profile); // id'ing info
 		}
 	)
 ); //be able to auth with google
@@ -24,6 +26,7 @@ app.get(
 	})
 );
 
+app.get('/auth/google/callback', passport.authenticate('google')); //code to get prof info
+
 const PORT = process.env.PORT || 5000; //heroku can inject the env var
 app.listen(PORT); //tells node to listen on this port
-//localhost:5000
