@@ -21,7 +21,8 @@ passport.use(
 		{
 			clientID: keys.googleClientID,
 			clientSecret: keys.googleClientSecret,
-			callbackURL: '/auth/google/callback'
+			callbackURL: '/auth/google/callback',
+			proxy: true //used for redirect uris
 		}, //callback function to do when user signsin
 		(accessToken, refreshToken, profile, done) => {
 			//.then is async call, returns a promise
