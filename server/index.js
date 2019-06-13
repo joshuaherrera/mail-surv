@@ -38,4 +38,3 @@ mongoose.connect(keys.mongoURI);
 
 const PORT = process.env.PORT || 5000; //heroku can inject the env var
 app.listen(PORT);
-// mongodb+srv://herrjosh:<password>@emaily-si4zu.mongodb.net/test?retryWrites=true&w=majority
