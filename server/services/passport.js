@@ -24,18 +24,15 @@ passport.use(
 			callbackURL: '/auth/google/callback',
 			proxy: true //used for redirect uris
 		}, //callback function to do when user signsin
-		(accessToken, refreshToken, profile, done) => {
+		async (accessToken, refreshToken, profile, done) => {
 			//.then is async call, returns a promise
-			User.findOne({ googleId: profile.id }).then((existingUser) => {
-				if (existingUser) {
-					//have record with id
-					done(null, existingUser); //first arg is error, second is user
-				} else {
-					new User({ googleId: profile.id })
-						.save() // use then because save is async
-						.then((user) => done(null, user)); //make model instance and save to mongodb
-				}
-			});
+			const existingUser = await User.findOne({ googleId: profile.id });
+			if (existingUser) {
+				//have record with id
+				return done(null, existingUser); //first arg is error, second is user
+			}
+			const user = await new User({ googleId: profile.id }).save(); // use then because save is async
+			done(null, user); //make model instance and save to mongodb
 		}
 	)
 ); //be able to auth with google
