@@ -9,12 +9,19 @@ module.exports = (app) => {
 		})
 	);
 
-	app.get('/auth/google/callback', passport.authenticate('google')); //code to get prof info
+	app.get(
+		'/auth/google/callback',
+		passport.authenticate('google'),
+		(req, res) => {
+			res.redirect('/surveys');
+		}
+	); //code to get profile info. last arrow fcn is what to do after
+	// auth
 
 	app.get('/api/logout/', (req, res) => {
 		//passport attaches functions to req we can use
 		req.logout(); //takes cookie for user and kills it to logout
-		res.send(req.user ? req.user : 'logged out');
+		res.redirect('/');
 	});
 
 	app.get('/api/current_user', (req, res) => {
