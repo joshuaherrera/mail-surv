@@ -22,8 +22,8 @@ class Header extends Component {
 		}
 	}
 	/*NOTE: use <a> tags when navigating to new html docs ie login etc
-			otherwise use Link tags for local navigation with react app
-	*/
+	 **		otherwise use Link tags for local navigation with react app
+	 */
 	render() {
 		return (
 			<nav>
