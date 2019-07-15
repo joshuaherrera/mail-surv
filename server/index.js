@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/keys');
+const bodyParser = require('body-parser');
 require('./models/User');
 require('./services/passport');
 
@@ -15,6 +16,7 @@ const app = express(); //generates running express app
  * Tells app to wire up middleware.
  * middleware takes some request, modifies it, then send to route handler.
  */
+app.use(bodyParser.json());
 app.use(
 	/*
 	 * cookie-session contains session, the info we want to use, in the cookie.
@@ -33,6 +35,7 @@ app.use(passport.session());
 
 //authRoutes(app);
 require('./routes/authRoutes')(app);
+require('./routes/billingRoutes')(app);
 
 mongoose.connect(keys.mongoURI);
 
