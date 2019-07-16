@@ -4,7 +4,8 @@ const { Schema } = mongoose; //takes property of mongoose, Schema, and assign to
 
 const userSchema = new Schema({
 	//define schema for users
-	googleId: String
+	googleId: String,
+	credits: { type: Number, default: 0 }
 });
 
 mongoose.model('users', userSchema); //make a new collection called users
