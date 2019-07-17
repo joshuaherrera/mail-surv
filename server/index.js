@@ -37,6 +37,24 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
+//add config for production environment. only run in prod
+if (process.env.NODE_ENV === 'production') {
+	// Express will serve up prod assets
+	// like main.js / main.css file
+	// if dont have routehandler, look in build dir to see
+	// if a route is defined there.
+	app.use(express.static('client/build'));
+
+	// Express will serve up index.html if
+	// it doesn't recognize the route
+	// if nothing in our routes directory or client/build
+	// handle here
+	const path = require('path');
+	app.get('*', (req, res) => {
+		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+	});
+}
+
 mongoose.connect(keys.mongoURI);
 
 const PORT = process.env.PORT || 5000; //heroku can inject the env var
