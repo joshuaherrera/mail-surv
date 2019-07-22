@@ -5,6 +5,7 @@ const passport = require('passport');
 const keys = require('./config/keys');
 const bodyParser = require('body-parser');
 require('./models/User');
+require('./models/Survey');
 require('./services/passport');
 
 //const authRoutes = require('./routes/authRoutes');
@@ -33,9 +34,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//authRoutes(app);
+//authRoutes(app); immediately call function with app
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 //add config for production environment. only run in prod
 if (process.env.NODE_ENV === 'production') {
