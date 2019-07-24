@@ -7,8 +7,12 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const Survey = mongoose.model('surveys'); //do it this way to avoid errors with testing frameworks
 
 module.exports = (app) => {
+	app.get('/api/surveys/thanks', (req, res) => {
+		res.send('Thanks for voting!');
+	});
+
 	//note: middleware should be placed in order of desired execution
-	app.post('/api/surveys', requireLogin, requireCredits, (req, res) => {
+	app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
 		//make sure user is logged in.
 		//also need to check if have enough
 		//credits for a survey
@@ -27,5 +31,15 @@ module.exports = (app) => {
 
 		//send email here
 		const mailer = new Mailer(survey, surveyTemplate(survey));
+		try {
+			await mailer.send();
+			await survey.save();
+			req.user.credits -= 1;
+			const user = await req.user.save();
+
+			res.send(user); //send back user model with new credits for front end
+		} catch (err) {
+			res.status(422).send(err);
+		}
 	});
 };
