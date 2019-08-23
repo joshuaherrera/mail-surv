@@ -32,8 +32,8 @@ class SurveyForm extends Component {
 		return (
 			<div>
 				<form
-					onSubmit={this.props.handleSubmit((values) =>
-						console.log(values)
+					onSubmit={this.props.handleSubmit(() =>
+						this.props.onSurveySubmit()
 					)}
 				>
 					{/*name is the key for the redux store. component can be html type or custom component*/}
@@ -71,5 +71,6 @@ function validate(values) {
 
 export default reduxForm({
 	validate: validate,
-	form: 'surveyForm'
+	form: 'surveyForm', //how to namespace to have its own values
+	destroyOnUnmount: false //true by default, dumps values
 })(SurveyForm);
