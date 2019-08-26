@@ -1,6 +1,7 @@
 //surveynew shows surveyform and surveyreview
 
 import React, { Component } from 'react';
+import { reduxForm } from 'redux-form';
 import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
 
@@ -29,4 +30,6 @@ class SurveyNew extends Component {
 	}
 }
 
-export default SurveyNew;
+export default reduxForm({
+	form: 'surveyForm' //if move away from here (parent of form and review), all fields dumped
+})(SurveyNew);
