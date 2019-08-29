@@ -15,11 +15,11 @@ module.exports = (app) => {
 	});
 
 	app.post('/api/surveys/webhooks', (req, res) => {
+		//returns wildcards denoted with :
+		const p = new Path('/api/surveys/:surveyId/:choice');
+
 		const events = _.map(req.body, ({ email, url }) => {
-			const pathname = new URL(url).pathname;
-			//returns wildcards denoted with :
-			const p = new Path('/api/surveys/:surveyId/:choice');
-			const match = p.test(pathname);
+			const match = p.test(new URL(url).pathname);
 			if (match) {
 				return {
 					email,
@@ -29,7 +29,13 @@ module.exports = (app) => {
 			}
 		});
 
-		console.log(events);
+		const compactEvents = _.compact(events);
+		const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
+
+		console.log(uniqueEvents);
+
+		//must respond to sendgrid so response isnt resent
+		res.send({});
 	});
 
 	//note: middleware should be placed in order of desired execution
