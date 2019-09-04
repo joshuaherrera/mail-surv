@@ -10,29 +10,45 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const Survey = mongoose.model('surveys'); //do it this way to avoid errors with testing frameworks
 
 module.exports = (app) => {
-	app.get('/api/surveys/thanks', (req, res) => {
+	app.get('/api/surveys/:surveyId/:choice', (req, res) => {
 		res.send('Thanks for voting!');
 	});
 
 	app.post('/api/surveys/webhooks', (req, res) => {
 		//returns wildcards denoted with :
 		const p = new Path('/api/surveys/:surveyId/:choice');
+		_.chain(req.body)
+			.map(({ email, url }) => {
+				//use p above to find appropriate pathnaem
+				const match = p.test(new URL(url).pathname);
+				if (match) {
+					return {
+						email,
+						surveyId: match.surveyId,
+						choice: match.choice
+					};
+				}
+			})
+			.compact() //removes all falsey values eg false, undefined etc
+			.uniqBy('email', 'surveyId') //only unique values kept
+			.each(({ surveyId, email, choice }) => {
+				Survey.updateOne(
+					{
+						_id: surveyId, //mongo always uses _id
+						recipients: {
+							$elemMatch: { email: email, responded: false }
+						}
+					},
+					{
+						$inc: { [choice]: 1 },
+						$set: { 'recipients.$.responded': true }, //$ aligns with recipeint found with $elemMatch
+						lastResponded: new Date()
+					}
+				).exec(); //executes query
+			})
+			.value();
 
-		const events = _.map(req.body, ({ email, url }) => {
-			const match = p.test(new URL(url).pathname);
-			if (match) {
-				return {
-					email,
-					surveyId: match.surveyId,
-					choice: match.choice
-				};
-			}
-		});
-
-		const compactEvents = _.compact(events);
-		const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
-
-		console.log(uniqueEvents);
+		//console.log(events);
 
 		//must respond to sendgrid so response isnt resent
 		res.send({});

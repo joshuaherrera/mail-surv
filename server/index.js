@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 
-mongoose.connect(keys.mongoURI);
+mongoose.connect(keys.mongoURI, { useNewUrlParser: true }); //fixes deprecation warnings
 
 const PORT = process.env.PORT || 5000; //heroku can inject the env var
 app.listen(PORT);
