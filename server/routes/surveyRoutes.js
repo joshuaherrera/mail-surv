@@ -63,34 +63,51 @@ module.exports = (app) => {
 	});
 
 	//note: middleware should be placed in order of desired execution
-	app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
-		//make sure user is logged in.
-		//also need to check if have enough
-		//credits for a survey
-		const { title, subject, body, recipients } = req.body; //get and assign appropriate props
+	app.post(
+		'/api/surveys/new',
+		requireLogin,
+		requireCredits,
+		async (req, res) => {
+			//make sure user is logged in.
+			//also need to check if have enough
+			//credits for a survey
+			const { title, subject, body, recipients } = req.body; //get and assign appropriate props
 
-		const survey = new Survey({
-			title, //equivalent to {title: title}
-			subject,
-			body,
-			recipients: recipients
-				.split(',')
-				.map((email) => ({ email: email.trim() })), //create short object
-			_user: req.user.id, //automatically made by mongoose
-			dateSent: Date.now()
-		});
+			const survey = new Survey({
+				title, //equivalent to {title: title}
+				subject,
+				body,
+				recipients: recipients
+					.split(',')
+					.map((email) => ({ email: email.trim() })), //create short object
+				_user: req.user.id, //automatically made by mongoose
+				dateSent: Date.now()
+			});
 
-		//send email here
-		const mailer = new Mailer(survey, surveyTemplate(survey));
-		try {
-			await mailer.send();
-			await survey.save();
-			req.user.credits -= 1;
-			const user = await req.user.save();
+			//send email here
+			const mailer = new Mailer(survey, surveyTemplate(survey));
+			try {
+				await mailer.send();
+				await survey.save();
+				req.user.credits -= 1;
+				const user = await req.user.save();
 
-			res.send(user); //send back user model with new credits for front end
-		} catch (err) {
-			res.status(422).send(err);
+				res.send(user); //send back user model with new credits for front end
+			} catch (err) {
+				res.status(422).send(err);
+			}
 		}
+	);
+
+	/*	app.post('/api/surveys/delete', requireLogin, async (req, res) => {
+		//think of how to send the user id to mongo. how do
+		//we get it from the client sige?
+		console.log('delete post handler', req.body);
+		await Survey.findByIdAndDelete(req.body.id, (err) => {
+			if (err) console.log(err);
+			console.log('successful delete of ' + req.body.id);
+		});
+		res.send({});
 	});
+	*/
 };

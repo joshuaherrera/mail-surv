@@ -20,11 +20,19 @@ export const handleToken = (token) => async (dispatch) => {
 };
 
 export const submitSurvey = (values, history) => async (dispatch) => {
-	const res = await axios.post('/api/surveys', values);
+	const res = await axios.post('/api/surveys/new', values);
 
 	history.push('/surveys');
 	dispatch({ type: FETCH_USER, payload: res.data });
 };
+
+/*export const deleteSurvey = (id, history) => async (dispatch) => {
+	const res = await axios.post('/api/surveys/delete', id);
+
+	history.push('/surveys');
+	//should i fetch user or fetch surveys?
+	dispatch({ type: FETCH_USER, payload: res.data });
+};*/
 
 export const fetchSurveys = () => async (dispatch) => {
 	const res = await axios.get('/api/surveys');
