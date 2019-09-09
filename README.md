@@ -4,7 +4,7 @@ Mail-Surv is a web application where a user can create surveys to send to recipi
 
 To use:
 
-1. Create an account using a Google Account.
+1. Login with your Google account by clicking "Login with Google"
 2. Create surveys by clicking the red + button on the bottom right.
 3. Fill out the form (don't forget recipients)
 4. Confirm entries and hit send.
