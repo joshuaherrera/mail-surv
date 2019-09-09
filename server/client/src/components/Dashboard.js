@@ -4,6 +4,12 @@ import SurveyList from './surveys/SurveyList';
 const Dashboard = () => {
 	return (
 		<div>
+			<div className="center">
+				<h5>
+					To add credits, click above and use 4242-4242-4242-4242 as
+					the credit card number to utilize Stripe's test mode!
+				</h5>
+			</div>
 			<SurveyList />
 			<div className="fixed-action-btn">
 				<Link
