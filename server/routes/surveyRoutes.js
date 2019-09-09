@@ -99,15 +99,19 @@ module.exports = (app) => {
 		}
 	);
 
-	/*	app.post('/api/surveys/delete', requireLogin, async (req, res) => {
+	app.post('/api/surveys/delete', requireLogin, async (req, res) => {
 		//think of how to send the user id to mongo. how do
 		//we get it from the client sige?
-		console.log('delete post handler', req.body);
-		await Survey.findByIdAndDelete(req.body.id, (err) => {
-			if (err) console.log(err);
-			console.log('successful delete of ' + req.body.id);
-		});
-		res.send({});
+		//console.log('delete post handler', req.body);
+		try {
+			await Survey.findByIdAndDelete(req.body.id, (err) => {
+				if (err) console.log(err);
+			});
+			//get user model to update credits
+			const user = await req.user.save();
+			res.send(user);
+		} catch (err) {
+			res.status(403).send(err);
+		}
 	});
-	*/
 };

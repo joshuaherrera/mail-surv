@@ -1,6 +1,8 @@
 //shows all the surveys created so far
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import { fetchSurveys } from '../../actions';
 
 class SurveyList extends Component {
@@ -21,9 +23,17 @@ class SurveyList extends Component {
 	}
 
 	renderSurveys() {
+		if (_.isEmpty(this.props.surveys)) {
+			return (
+				<div className="center">
+					<h5>No surveys found! Add one by clicking the + below!</h5>
+				</div>
+			);
+		}
+		console.log(typeof this.props.surveys);
 		return this.props.surveys.reverse().map((survey) => {
 			return (
-				<div className="card blue-grey darken-1" key={survey._id}>
+				<div className="card blue-grey darken-2" key={survey._id}>
 					<div className="card-content white-text">
 						<span className="card-title">{survey.title}</span>
 						<p>{survey.body}</p>
@@ -41,6 +51,19 @@ class SurveyList extends Component {
 					<div className="card-action">
 						<a>Yes: {survey.yes}</a>
 						<a>No: {survey.no}</a>
+						<div className="right">
+							<Link
+								to={{
+									pathname: '/surveys/delete',
+									state: {
+										survey: survey
+									}
+								}}
+								className="btn-flat btn-small red lighten-1 white-text"
+							>
+								Delete
+							</Link>
+						</div>
 					</div>
 				</div>
 			);
